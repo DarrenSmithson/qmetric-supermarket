@@ -5,8 +5,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Basket {
+
     private final List<Item> items;
 
     public Basket() {
@@ -47,7 +50,17 @@ public class Basket {
          *  which provides that functionality.
          */
         private BigDecimal discounts() {
-            return BigDecimal.ZERO;
+            //check items for product
+            //add discount types to set
+            Set<DiscountStrategy> discountStrategys = items.stream()
+                                                           .map(Item::discountStrategy)
+                                                           .collect(Collectors.toSet());
+
+            return discountStrategys.stream().map(d -> d.applyDiscounts(items))
+                                    .reduce(BigDecimal::add)
+                                    .orElse(BigDecimal.ZERO)
+                                    .setScale(2, RoundingMode.HALF_UP);
+
         }
 
         private BigDecimal calculate() {

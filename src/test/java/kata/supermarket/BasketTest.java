@@ -40,8 +40,33 @@ class BasketTest {
                 buyThreeForTwoForFourDiscount(),
                 buyOneKiloHalfPriceLessThanKiloDiscount(),
                 buyOneKiloHalfPriceMoreThanKiloDiscount(),
-                buyOneKiloHalfPriceMoreThanKiloOneItemDiscount()
+                buyOneKiloHalfPriceMoreThanKiloOneItemDiscount(),
+                buyMixedUnitProducts(),
+                buyCrispsAndPopcorn(),
+                buyCrispsAndPopcornRev(),
+                buyMealDeal()
+
         );
+    }
+
+    private static Arguments buyMealDeal() {
+        return Arguments.of("buy 1 meal deal", "4.00",
+                            Arrays.asList(aDrink(), aSandwich(), anApple()));
+    }
+
+    private static Arguments buyCrispsAndPopcorn() {
+        return Arguments.of("buy 1 bag of crisps and 1 bag of popcorn", "3.40",
+                            Arrays.asList(aBagOfCrisps(), aBagOfPopcorn()));
+    }
+
+    private static Arguments buyCrispsAndPopcornRev() {
+        return Arguments.of("buy 1 bag of popcorn and 1 bag of crisps", "3.40",
+                            Arrays.asList(aBagOfPopcorn(), aBagOfCrisps()));
+    }
+
+    private static Arguments buyMixedUnitProducts() {
+        return Arguments.of("buy 2 bag of crisps and 2 bottles of wine", "12.20",
+                            Arrays.asList(aBagOfCrisps(), aBagOfCrisps(), aBottleOfWine(), aBottleOfWine()));
     }
 
     private static Arguments buyOneKiloHalfPriceMoreThanKiloDiscount() {
@@ -51,12 +76,12 @@ class BasketTest {
 
     private static Arguments buyOneKiloHalfPriceLessThanKiloDiscount() {
         return Arguments.of("buy 1 kilo for half price for less than kilo weight", "0.96",
-                            Arrays.asList(aBagOfCarrots()));
+                            Collections.singleton(aBagOfCarrots()));
     }
 
     private static Arguments buyOneKiloHalfPriceMoreThanKiloOneItemDiscount() {
         return Arguments.of("buy 1 kilo for half price for less than kilo weight", "1.80",
-                            Arrays.asList(aBagOfTomatoes()));
+                            Collections.singleton(aBagOfTomatoes()));
     }
 
     private static Arguments buyThreeForTwoForTwoDiscount() {
@@ -124,37 +149,53 @@ class BasketTest {
     }
 
     private static Item aPintOfMilk() {
-        return new UnitProduct(new BigDecimal("0.49"), DiscountStrategy.NODISCOUNT).oneOf();
+        return new UnitProduct(new BigDecimal("0.49"), DiscountStrategy.NODISCOUNT, "milk").oneOf();
     }
 
     private static Item aPackOfDigestives() {
-        return new UnitProduct(new BigDecimal("1.55"), DiscountStrategy.NODISCOUNT).oneOf();
+        return new UnitProduct(new BigDecimal("1.55"), DiscountStrategy.NODISCOUNT, "digestives").oneOf();
     }
 
     private static Item aBagOfCarrots() {
         return new WeighedProduct(new BigDecimal("1.20"),
-                                  DiscountStrategy.BUYONEKILOHALFPRICE).weighing(BigDecimal.valueOf(0.8));
+                                  DiscountStrategy.BUYONEKILOHALFPRICE, "carrots").weighing(BigDecimal.valueOf(0.8));
     }
 
     private static Item aBagOfTomatoes() {
         return new WeighedProduct(new BigDecimal("1.20"),
-                                  DiscountStrategy.BUYONEKILOHALFPRICE).weighing(BigDecimal.valueOf(3.0));
+                                  DiscountStrategy.BUYONEKILOHALFPRICE, "tomatoes").weighing(BigDecimal.valueOf(3.0));
     }
 
     private static Item aBagOfCrisps() {
-        return new UnitProduct(new BigDecimal("1.20"), DiscountStrategy.BUYONEGETONEFREE).oneOf();
+        return new UnitProduct(new BigDecimal("1.20"), DiscountStrategy.BUYONEGETONEFREE, "crisps").oneOf();
+    }
+
+    private static Item aDrink() {
+        return new UnitProduct(new BigDecimal("2.00"), DiscountStrategy.BUYMEALDEAL, "drink").oneOf();
+    }
+
+    private static Item aSandwich() {
+        return new UnitProduct(new BigDecimal("3.00"), DiscountStrategy.BUYMEALDEAL, "sandwich").oneOf();
+    }
+
+    private static Item anApple() {
+        return new UnitProduct(new BigDecimal("0.80"), DiscountStrategy.BUYMEALDEAL, "apple").oneOf();
+    }
+
+    private static Item aBagOfPopcorn() {
+        return new UnitProduct(new BigDecimal("2.20"), DiscountStrategy.BUYONEGETONEFREE, "popcorn").oneOf();
     }
 
     private static Item aBottleOfWine() {
-        return new UnitProduct(new BigDecimal("5.50"), DiscountStrategy.BUYTHREEFORTWO).oneOf();
+        return new UnitProduct(new BigDecimal("5.50"), DiscountStrategy.BUYTHREEFORTWO, "wine").oneOf();
     }
 
     private static Item aMarsBar() {
-        return new UnitProduct(new BigDecimal("0.80"), DiscountStrategy.BUYTWOFORONEPOUND).oneOf();
+        return new UnitProduct(new BigDecimal("0.80"), DiscountStrategy.BUYTWOFORONEPOUND, "mars").oneOf();
     }
 
     private static WeighedProduct aKiloOfAmericanSweets() {
-        return new WeighedProduct(new BigDecimal("4.99"), DiscountStrategy.NODISCOUNT);
+        return new WeighedProduct(new BigDecimal("4.99"), DiscountStrategy.NODISCOUNT, "sweets");
     }
 
     private static Item twoFiftyGramsOfAmericanSweets() {
@@ -162,7 +203,7 @@ class BasketTest {
     }
 
     private static WeighedProduct aKiloOfPickAndMix() {
-        return new WeighedProduct(new BigDecimal("2.99"), DiscountStrategy.NODISCOUNT);
+        return new WeighedProduct(new BigDecimal("2.99"), DiscountStrategy.NODISCOUNT, "pandm");
     }
 
     private static Item twoHundredGramsOfPickAndMix() {

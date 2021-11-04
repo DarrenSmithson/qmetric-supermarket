@@ -53,6 +53,26 @@ public enum DiscountStrategy {
             return originalPrice.subtract(newPrice.add(remainder));
         }
     },
+
+    BUYMEALDEAL {
+        public BigDecimal applyDiscounts(List<Item> items) {
+
+            BigDecimal setPrice = BigDecimal.valueOf(4.00);
+
+            BigDecimal remainder = price(items).multiply(BigDecimal.valueOf(count(items)%2));
+
+            BigDecimal originalPrice = BigDecimal.valueOf(count(items))
+                                                 .multiply(price(items))
+                                                 .setScale(2,RoundingMode.HALF_UP);
+
+            BigDecimal newPrice = BigDecimal.valueOf(count(items))
+                                            .divide(BigDecimal.valueOf(2), RoundingMode.DOWN)
+                                            .multiply(setPrice).setScale(2,RoundingMode.HALF_UP);
+
+            return originalPrice.subtract(newPrice.add(remainder));
+        }
+    },
+
     NODISCOUNT{
         public BigDecimal applyDiscounts(List<Item> items) {
             return BigDecimal.ZERO;
@@ -72,7 +92,7 @@ public enum DiscountStrategy {
                     .filter(i -> i.product().getType().equals(PRODUCT_TYPE.WEIGHT))
                     .map(type::cast)
                     .map(iw -> iw.weight())
-                    .reduce(BigDecimal.ZERO, (a, b) -> a.add(b));
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private static BigDecimal price(List<Item> items){

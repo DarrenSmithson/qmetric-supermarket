@@ -6,8 +6,8 @@ public class WeighedProduct extends Product{
 
     private final BigDecimal pricePerKilo;
 
-    public WeighedProduct(final BigDecimal pricePerKilo, DiscountStrategy discountStrategy) {
-        super(discountStrategy, PRODUCT_TYPE.WEIGHT);
+    public WeighedProduct(final BigDecimal pricePerKilo, DiscountStrategy discountStrategy, String code) {
+        super(discountStrategy, PRODUCT_TYPE.WEIGHT, code);
         this.pricePerKilo = pricePerKilo;
     }
 
